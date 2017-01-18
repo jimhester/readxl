@@ -25,7 +25,7 @@ class XlsxWorkSheet {
 public:
 
   XlsxWorkSheet(XlsxWorkBook wb, int sheet_id): wb_(wb) {
-    std::string sheetPath = "xl/" + wb.sheetPath(sheet_id + 1);
+    std::string sheetPath = wb.sheetPath(sheet_id);
     sheet_ = zip_buffer(wb.path(), sheetPath);
     sheetXml_.parse<0>(&sheet_[0]);
 

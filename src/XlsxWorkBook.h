@@ -45,7 +45,7 @@ class XlsxWorkBook {
         rapidxml::xml_attribute<>* sheet_id = sheet->first_attribute("sheetId");
         sheet_id_[i] = (sheet_id != NULL) ? atoi(sheet_id->value()) : NA_INTEGER;
 
-        rapidxml::xml_attribute<>* id = sheet->first_attribute("Id");
+        rapidxml::xml_attribute<>* id = sheet->first_attribute("r:id");
         id_[i] = (id != NULL) ? Rf_mkCharCE(id->value(), CE_UTF8) : NA_STRING;
 
         i++;
@@ -64,12 +64,12 @@ class XlsxWorkBook {
       rapidxml::xml_document<> rels_xml;
       rels_xml.parse<0>(&rels_xml_file[0]);
 
-      rapidxml::xml_node<>* relationships = rels_xml.first_node("relationship");
+      rapidxml::xml_node<>* relationships = rels_xml.first_node("Relationships");
       if (relationships == NULL)
         return;
 
       for (rapidxml::xml_node<>* relationship = relationships->first_node();
-          relationship; relationship = relationships->next_sibling()) {
+          relationship; relationship = relationship->next_sibling()) {
         rapidxml::xml_attribute<>* id = relationship->first_attribute("Id");
         rapidxml::xml_attribute<>* target = relationship->first_attribute("Target");
         if (id != NULL && target != NULL) {
@@ -93,7 +93,12 @@ class XlsxWorkBook {
     }
 
     std::string target(int sheet_id) {
-      return target_[Rcpp::as<std::string>(id_[sheet_id])];
+      std::string id = Rcpp::as<std::string>(id_[sheet_id - 1]);
+      std::unordered_map<std::string, std::string>::const_iterator it = target_.find(id);
+      if (it == target_.end()) {
+        Rcpp::stop("`%s` not found", id);
+      }
+      return it->second;
     }
   };
 
