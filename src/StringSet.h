@@ -11,6 +11,12 @@ public:
     if (strlen(s) > 0)
       set_.insert(s);
   }
+  template <size_t SIZE>
+  StringSet(const std::string (&s)[SIZE]) {
+    for (size_t i = 0; i < SIZE; ++i) {
+      set_.insert(s[i]);
+    }
+  }
   StringSet(const std::vector<std::string> &s) {
     for (std::vector<std::string>::const_iterator i = s.begin(); i != s.end(); ++i)
       set_.insert(*i);

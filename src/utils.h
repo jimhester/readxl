@@ -40,18 +40,11 @@ inline bool logicalFromString(std::string maybe_tf, bool *out) {
   // from the R help for ?logical
   // Character strings c("T", "TRUE", "True", "true") are regarded as true
   // c("F", "FALSE", "False", "false") as false, and all others as NA.
-  static const std::string trues [] = {"T", "TRUE", "True", "true"};
-  static const std::string falses [] = {"F", "FALSE", "False", "false"};
-  std::vector<std::string> true_strings(
-      trues,
-      trues + (sizeof(trues)/sizeof(std::string))
-  );
-  std::vector<std::string> false_strings(
-      falses,
-      falses + (sizeof(falses)/sizeof(std::string))
-  );
-  StringSet true_values(true_strings);
-  StringSet false_values(false_strings);
+  static const std::string t [] = {"T", "TRUE", "True", "true"};
+  static const StringSet true_values(t);
+  static const std::string f [] = {"F", "FALSE", "False", "false"};
+  static const StringSet false_values(f);
+
   if (true_values.contains(maybe_tf)) {
     *out = true;
     matches = true;
